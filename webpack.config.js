@@ -2,15 +2,15 @@
 const path = require('path');
 // экспортируем плагины. Пишем с большой буквы т.к. такм нах-ся классы, которые будем вызывать через new
 const HtnmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPligin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 // определим какой mode(сборка production или development)
-const mode = process.env.NODE__ENV || 'development';
+const mode = process.env.NODE_ENV || 'development';
 // создаем сами настройки
 module.exports = {
   mode,
   // позволяет на проде не использовать sourcemap
-  devTool: mose === 'development' ? 'eval' : false,
+  devtool: mode === 'development' ? 'eval' : false,
   // входной файл - где нах-ся весь проект (+ остальные папки/файлы = может расширение === '.js')
   entry: path.resolve(__dirname, 'src', 'index.jsx'),
   // выходной файл - куда возвращаем конечный рез-т
@@ -43,7 +43,7 @@ module.exports = {
       // складываем в папку 'public'(можно в 'src'). Позволяем обрабатывать html если что-то подключено
       template: path.resolve(__dirname, 'public', 'index.html'),
     }),
-    new MiniCssExtractPligin(),
+    new MiniCssExtractPlugin(),
   ],
   module: {
     rules: [
@@ -64,8 +64,8 @@ module.exports = {
         // 1) 'sass-loader' обработает scss||sass (если есть)
         // 2)  'postcss-loader' добавит префиксы. Для него нужны настройки!
         // 3) 'css-loader' все собирает
-        // 4) MiniCssExtractPligin положит его в отдельный файл
-        use: [MiniCssExtractPligin.loader, 'css-loader', {
+        // 4) MiniCssExtractPlugin положит его в отдельный файл(а не оставит в html)
+        use: [MiniCssExtractPlugin.loader, 'css-loader', {
           loader: 'postcss-loader',
           options: {
             postcssOptions: {
@@ -73,7 +73,25 @@ module.exports = {
             }
           }
         }, 'sass-loader'],
-      }
+      },
+      {
+        // позволяет обрабатывать '.jpg', '.jpeg', '.gif', svg, png
+        test: /\.(jpg|jpeg|gif|svg|png)$/i,
+        // обработка с помощью встроенного в webpack ресурса
+        // укажим тип и он поймет что нужно положить в assets
+        type: 'asset/resource'
+      },
+      {
+        // позволяет обрабатывать '.woff', '.woff2'
+        test: /\.(woff|woff2)$/i,
+        // обработка с помощью встроенного в webpack ресурса
+        // укажим тип и он поймет что нужно положить в assets
+        type: 'asset/resource',
+        // чтобы не кидать шрифты в корень, а выбрать папку и имя
+        generator: {
+          filename: 'fonts/[hash][ext]',
+        }
+      },
     ],
   }
 };
