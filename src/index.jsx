@@ -1,5 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+// подключим шрифты
+import'./index.scss';
 
 import Module from './module';
 

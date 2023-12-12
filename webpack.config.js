@@ -1,6 +1,7 @@
 // чтобы правильно прописывать пути
 const path = require('path');
-// экспортируем плагины. Пишем с большой буквы т.к. такм нах-ся классы, которые будем вызывать через new
+// экспортируем плагины. Пишем с большой буквы т.к.
+// там нах-ся классы, которые будем вызывать через new
 const HtnmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
@@ -11,11 +12,12 @@ module.exports = {
   mode,
   // позволяет на проде не использовать sourcemap
   devtool: mode === 'development' ? 'eval' : false,
-  // входной файл - где нах-ся весь проект (+ остальные папки/файлы = может расширение === '.js')
+  // входной файл - где нах-ся весь проект
+  // (+ остальные папки/файлы = может расширение === '.js')
   entry: path.resolve(__dirname, 'src', 'index.jsx'),
   // выходной файл - куда возвращаем конечный рез-т
   output: {
-    // путь 
+    // путь
     path: path.resolve(__dirname, 'dist'),
     // очищаем
     clean: true,
@@ -32,15 +34,16 @@ module.exports = {
   devServer: {
     // запускается только если пропишем команду serve
     port: 3000,
-    // браузер сразу откроет  
-    open:true, 
+    // браузер сразу откроет
+    open: true,
     // горячая перезагрузка
     hot: true,
   },
   plugins: [
     // плагины внутрь принимают настройки
     new HtnmlWebpackPlugin({
-      // складываем в папку 'public'(можно в 'src'). Позволяем обрабатывать html если что-то подключено
+      // складываем в папку 'public'(можно в 'src').
+      // Позволяем обрабатывать html если что-то подключено
       template: path.resolve(__dirname, 'public', 'index.html'),
     }),
     new MiniCssExtractPlugin(),
@@ -53,7 +56,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ["@babel/preset-react", "@babel/preset-env"],
+            presets: ['@babel/preset-react', '@babel/preset-env'],
           }
         },
       },
@@ -64,7 +67,8 @@ module.exports = {
         // 1) 'sass-loader' обработает scss||sass (если есть)
         // 2)  'postcss-loader' добавит префиксы. Для него нужны настройки!
         // 3) 'css-loader' все собирает
-        // 4) MiniCssExtractPlugin положит его в отдельный файл(а не оставит в html)
+        // 4) MiniCssExtractPlugin положит его
+        // в отдельный файл(а не оставит в html)
         use: [MiniCssExtractPlugin.loader, 'css-loader', {
           loader: 'postcss-loader',
           options: {
@@ -91,6 +95,11 @@ module.exports = {
         generator: {
           filename: 'fonts/[hash][ext]',
         }
+      },
+      {
+        // позволяет обрабатывать '.jpg', '.jpeg', '.gif', svg, png
+        test: /\.html$/i,
+        loader: 'html-loader',
       },
     ],
   }
